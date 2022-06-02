@@ -16,4 +16,9 @@ Gem::Specification.new do |spec|
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   spec.add_dependency "rails", "~> 6.1.6"
+
+  spec.add_dependency 'solidus_core', ['>= 2.3', '< 4']
+  spec.add_dependency 'solidus_support', '~> 0.8'
+
+  spec.add_development_dependency 'solidus_dev_support', '~> 2.3'
 end
