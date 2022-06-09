@@ -10,7 +10,7 @@ module Spree
     #
     # When the payment method is used in the store it creates a source
     # that is provided to the gateway.
-    class AuthorizeNetAcceptJS < Spree::PaymentMethod
+    class AuthorizeNetAcceptJs < Spree::PaymentMethod
       # If payment method is in test mode or not (using sandbox)
       preference :test_mode, :boolean
 

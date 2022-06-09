@@ -65,7 +65,7 @@ module SolidusAuthorizenet
     def create_customer(payment)
       order = payment.order
       email = order.user&.email || order.email
-      user_id = order.user&.id || "guest-#{Time.now.to_i}-#{rand(10_000)}"
+      user_id = order.user&.id || "guest-#{order.id}"
 
       payment_profile = ::AuthorizeNet::API::CustomerPaymentProfileType.new
       payment_profile.payment = ::AuthorizeNet::API::PaymentType.new

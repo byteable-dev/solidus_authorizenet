@@ -12,7 +12,7 @@ module SolidusAuthorizenet
     engine_name 'solidus_authorizenet'
 
     initializer 'spree.payment_method.add_stripe_credit_card', after: 'spree.register.payment_methods' do |app|
-      app.config.spree.payment_methods << 'Spree::PaymentMethod::AuthorizeNetAcceptJS'
+      app.config.spree.payment_methods << 'Spree::PaymentMethod::AuthorizeNetAcceptJs'
       ::Spree::PermittedAttributes.source_attributes.concat [:data_value, :data_descriptor]
     end
 
