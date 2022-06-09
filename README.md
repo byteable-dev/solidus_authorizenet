@@ -1,6 +1,6 @@
 # SolidusAuthorizenet
 
-Authorize.Net payment method for solidius.
+Authorize.Net payment method for solidius. It uses the AcceptJS solution so card details is never processed by your server.
 
 
 ## Installation
