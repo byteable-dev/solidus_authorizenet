@@ -1,0 +1,104 @@
+<% if payment_method.preferred_test_mode %>
+<script type="text/javascript"
+    src="https://jstest.authorize.net/v1/Accept.js"
+    charset="utf-8">
+</script>
+<% else %>
+<script type="text/javascript"
+    src="https://js.authorize.net/v1/Accept.js"
+    charset="utf-8">
+</script>
+<% end %>
+<br>
+
+<% param_prefix = "payment_source[#{payment_method.id}]" %>
+<% name = SolidusSupport.combined_first_and_last_name_in_address? ? @order.name : "#{@order.billing_firstname} #{@order.billing_lastname}" %>
+
+<div id="authorizeNetErrors"></div>
+
+<div class="text-input">
+  <%= label_tag "name_on_card_#{payment_method.id}", t('spree.name_on_card') %>
+  <%= text_field_tag "", name, { id: "name_on_card_#{payment_method.id}", autocomplete: "cc-name" } %>
+</div>
+
+<div class="text-input">
+  <label for="cardNumber">Card Number</label>
+  <input type="text" id="cardNumber">
+</div>
+<div class="text-input">
+  <label for="expMonth">Expire Month</label>
+  <input type="text" id="expMonth"/>
+</div>
+<div class="text-input">
+  <label for="expYear">Expire Year</label>
+  <input type="text" id="expYear"/>
+</div>
+<div class="text-input">
+  <label for="cardCode">Card Code</label>
+  <input type="text" id="cardCode"/>
+</div>
+
+<input type="hidden" name="<%= param_prefix %>[data_value]" id="dataValue" />
+<input type="hidden" name="<%= param_prefix %>[data_descriptor]" id="dataDescriptor" />
+
+<% if @order.bill_address %>
+  <%= fields_for "#{param_prefix}[address_attributes]", @order.bill_address do |f| %>
+    <%= render partial: 'spree/address/form_hidden', locals: { form: f } %>
+  <% end %>
+<% end %>
+
+<script type="text/javascript">
+
+function paymentFormUpdate(opaqueData) {
+    document.getElementById("dataDescriptor").value = opaqueData.dataDescriptor;
+    document.getElementById("dataValue").value = opaqueData.dataValue;
+
+    document.getElementById("checkout_form_payment").submit();
+}
+
+function responseHandler(response) {
+
+    if (response.messages.resultCode === "Error") {
+        setTimeout(function() {
+            document.forms.checkout_form_payment.elements.commit.disabled = false;
+        }, 500)
+
+        var i = 0;
+        var messages = [];
+        while (i < response.messages.message.length) {
+            messages.push(response.messages.message[i].text)
+            i = i + 1;
+        }
+          
+        document.getElementById("authorizeNetErrors").innerHTML = messages.join("<br>") + "<br><br>"
+    } else {
+        paymentFormUpdate(response.opaqueData);
+    }
+}
+
+function sendPaymentDataToAnet() {
+    var authData = {};
+    authData.clientKey = "<%= payment_method.preferred_api_public_key.squish %>";
+    authData.apiLoginID = "<%= payment_method.preferred_api_login_id.squish %>";
+
+    var cardData = {};
+    cardData.cardNumber = document.getElementById("cardNumber").value;
+    cardData.month = document.getElementById("expMonth").value;
+    cardData.year = document.getElementById("expYear").value;
+    cardData.cardCode = document.getElementById("cardCode").value;
+
+    var secureData = {};
+    secureData.authData = authData;
+    secureData.cardData = cardData;
+
+	Accept.dispatchData(secureData, responseHandler);
+}
+
+document.getElementById('checkout_form_payment').addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    sendPaymentDataToAnet();
+    return false;
+})
+
+</script>

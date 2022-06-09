@@ -1,0 +1,67 @@
+# frozen_string_literal: true
+
+module Spree
+  class PaymentMethod
+    ##
+    # AuthorizeNet Payment Method
+    #
+    # This is the actual payment method that is available to the user. It is set up
+    # in the backend by an admin. It needs credentials from AuthorizieNet to work.
+    #
+    # When the payment method is used in the store it creates a source
+    # that is provided to the gateway.
+    class AuthorizeNetAcceptJS < Spree::PaymentMethod
+      # If payment method is in test mode or not (using sandbox)
+      preference :test_mode, :boolean
+
+      # The api login id to use with authorize net api
+      preference :api_login_id, :string
+
+      # The api transaction key to use with authorize net api
+      preference :api_transaction_key, :string
+
+      # The api public key to use with authorize net accept.js form
+      preference :api_public_key, :string
+
+      # The partial name to use for payment form when user is checking out
+      def partial_name
+        'authorize_net'
+      end
+
+      # The class to use as payment source. It stores information about the
+      # acceptjs validation and the authornize net customer profile id
+      def payment_source_class
+        ::SolidusAuthorizenet::PaymentSource
+      end
+
+      # The gateway class to use when communicating with AuthorizeNet API, for exaple
+      # when capturing a payment or refunding a transaction
+      def gateway_class
+        ::SolidusAuthorizenet::Gateway
+      end
+
+      # This payment method supports payment profiles. This means that when a payment
+      # is made via acceptjs then we createa  customer within AuthorizeNet. This customer
+      # is then used for all later communication with the API.
+      def payment_profiles_supported?
+        true
+      end
+
+      ##
+      # Create Profile
+      #
+      # Is called after the acceptjs validation is complete. Should create
+      # the customer in AuthorizeNet. If a customer is already found
+      # on the payment source we just bail out and reuse that.
+      def create_profile(payment)
+        return if payment.source.customer_id.present?
+
+        customer_id = gateway.create_customer(payment)
+
+        raise 'Missing customer id' if customer_id.blank?
+
+        payment.source.update(customer_id: customer_id)
+      end
+    end
+  end
+end
