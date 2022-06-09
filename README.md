@@ -20,7 +20,7 @@ bundle install
 And then install migrations and setup the payment method
 
 ```
-rails solidus_authorizenet:install
+rails solidus_authorizenet:install:migrations
 rake db:migrate
 rails db:seed:solidus_authorizenet
 ```
