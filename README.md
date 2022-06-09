@@ -1,4 +1,4 @@
-# SolidusAuthorizenet
+# SolidusAuthorizeNet
 
 Authorize.Net payment method for solidius. It uses the AcceptJS solution so card details is never processed by your server.
 
@@ -24,3 +24,9 @@ rails solidus_authorizenet:install
 rake db:migrate
 rails db:seed:solidus_authorizenet
 ```
+
+When using sandbox credentials remember to enable testmod under payment settings in backend.
+
+## Sandbox Account
+
+To create a sandbox account go to https://developer.authorize.net/
