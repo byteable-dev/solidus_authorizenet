@@ -33,6 +33,11 @@ module SolidusAuthorizenet
 
     attr_accessor(:address_attributes)
 
+    # Delegate customer id to our own customer id
+    def gateway_customer_profile_id
+      self.customer_id
+    end
+
     # Means that this source can be reused for other payments
     def reusable?
       true
