@@ -58,9 +58,10 @@ module Spree
 
         customer_id = gateway.create_customer(payment)
 
-        raise 'Missing customer id' if customer_id.blank?
-
         payment.source.update(customer_id: customer_id)
+      rescue ::Spree::Core::GatewayError => e
+        Rails.logger.fatal e
+        raise e
       end
     end
   end
