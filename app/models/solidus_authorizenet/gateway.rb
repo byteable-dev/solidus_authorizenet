@@ -88,6 +88,8 @@ module SolidusAuthorizenet
       error_code = response.messages&.messages&.first&.code
       error_text = response.messages&.messages&.first&.text
 
+      Rails.logger.info "#{error_code}: #{error_text}" if error_code.present?
+
       return error_text.delete('^0-9') if error_code == 'E00039'
 
       response.customerProfileId
