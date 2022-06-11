@@ -117,7 +117,7 @@ module SolidusAuthorizenet
 
       return error_text.delete('^0-9') if error_code == 'E00039'
 
-      raise ::Spree::Core::GatewayError, "#{error_code}: #{error_text}" if error_code.present?
+      raise ::Spree::Core::GatewayError, "#{error_code}: #{error_text}" if error_code.present? && error_code != 'I00001'
 
       response.customerProfileId
     end
