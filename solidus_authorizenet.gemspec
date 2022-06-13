@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.email       = ["styrken@gmail.com"]
   spec.homepage    = "https://github.com/byteable-dev/solidus_authorizenet"
   spec.summary     = "A payment solution for solidus that uses authorize.net"
-  spec.description = "A payment solution for solidus that uses authorize.net"
-  spec.license     = "MIT"
+  spec.description = spec.summary
+  spec.license     = "BSD-3-Clause"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/byteable-dev/solidus_authorizenet"
+  spec.metadata["source_code_uri"] = spec.homepage
 
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
