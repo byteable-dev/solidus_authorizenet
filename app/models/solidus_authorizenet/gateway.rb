@@ -95,17 +95,19 @@ module SolidusAuthorizenet
 
       request.profile.paymentProfiles = [payment_profile]
 
-      ship_to = ::AuthorizeNet::API::CustomerAddressType.new
-      ship_to.firstName = shipping_address.name.split('').first
-      ship_to.lastName = shipping_address.name.split('').last || ship_to.firstName
-      ship_to.address = shipping_address.address1
-      ship_to.city = shipping_address.city
-      ship_to.state = shipping_address.state.abbr
-      ship_to.zip = shipping_address.zipcode
-      ship_to.country = shipping_address.country.iso
-      ship_to.phoneNumber = shipping_address.phone
+      if shipping_address
+        ship_to = ::AuthorizeNet::API::CustomerAddressType.new
+        ship_to.firstName = shipping_address.name.split('').first
+        ship_to.lastName = shipping_address.name.split('').last || ship_to.firstName
+        ship_to.address = shipping_address.address1
+        ship_to.city = shipping_address.city
+        ship_to.state = shipping_address.state.abbr
+        ship_to.zip = shipping_address.zipcode
+        ship_to.country = shipping_address.country.iso
+        ship_to.phoneNumber = shipping_address.phone
 
-      request.profile.shipToList = [ship_to]
+        request.profile.shipToList = [ship_to]
+      end
 
       request.validationMode = ::AuthorizeNet::API::ValidationModeEnum::LiveMode
       request.validationMode = ::AuthorizeNet::API::ValidationModeEnum::TestMode if @options[:test_mode]
