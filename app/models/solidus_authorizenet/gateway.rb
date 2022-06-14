@@ -170,6 +170,22 @@ module SolidusAuthorizenet
     end
 
     ##
+    # Purchase
+    #
+    # Purchaes the amount by first authorizing it and then capturing it
+    def purchase(amount, source, order)
+      handle_response do
+        result = authorize(amount, source, order)
+
+        if result.is_a?(::ActiveMerchant::Billing::Response) && result.success?
+          capture(amount, result.authorization, order).success?
+        else
+          false
+        end
+      end
+    end
+
+    ##
     # Capture
     #
     # Captures a previously authoried transaction
