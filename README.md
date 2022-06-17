@@ -8,7 +8,7 @@ Authorize.Net payment method for solidius. It uses the AcceptJS solution so card
 Add this gem to your Gemfile
 
 ```
-gem 'solidus_authorizenet', github: 'byteable-dev/solidus_authorizenet', tag: '1.0.3'
+gem 'solidus_authorizenet', github: 'byteable-dev/solidus_authorizenet', tag: '1.0.4'
 ```
 
 Then run bundle install
