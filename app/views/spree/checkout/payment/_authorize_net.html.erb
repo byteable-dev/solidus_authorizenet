@@ -104,7 +104,7 @@ function sendPaymentDataToAnet() {
 }
 
 document.getElementById('checkout_form_payment').addEventListener("submit", function(e) {
-    var paymentForm = document.getElementById("payment-method-controls")
+    var paymentForm = document.getElementsByClassName("payment-method-controls")[0];
     const display = window.getComputedStyle(paymentForm).display;
 
     if (display === "none") return true;
