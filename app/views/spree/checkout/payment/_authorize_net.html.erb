@@ -40,6 +40,9 @@
 
 <input type="hidden" name="<%= param_prefix %>[data_value]" id="dataValue" />
 <input type="hidden" name="<%= param_prefix %>[data_descriptor]" id="dataDescriptor" />
+<input type="hidden" name="<%= param_prefix %>[last4]" id="dataLast4" />
+<input type="hidden" name="<%= param_prefix %>[expire_month]" id="dataExpireMonth" />
+<input type="hidden" name="<%= param_prefix %>[expire_year]" id="dataExpireYear" />
 
 <% if @order.bill_address %>
   <%= fields_for "#{param_prefix}[address_attributes]", @order.bill_address do |f| %>
@@ -50,8 +53,14 @@
 <script type="text/javascript">
 
 function paymentFormUpdate(opaqueData) {
+    console.log(opaqueData)
+
     document.getElementById("dataDescriptor").value = opaqueData.dataDescriptor;
     document.getElementById("dataValue").value = opaqueData.dataValue;
+
+    document.getElementById("dataLast4").value = document.getElementById("cardNumber").value.substring(document.getElementById("cardNumber").value.length - 4);
+    document.getElementById("dataExpireMonth").value = document.getElementById("expMonth").value;
+    document.getElementById("dataExpireYear").value = document.getElementById("expYear").value;
 
     document.getElementById("checkout_form_payment").submit();
 }
@@ -69,7 +78,7 @@ function responseHandler(response) {
             messages.push(response.messages.message[i].text)
             i = i + 1;
         }
-          
+
         document.getElementById("authorizeNetErrors").innerHTML = messages.join("<br>") + "<br><br>"
     } else {
         paymentFormUpdate(response.opaqueData);
@@ -91,10 +100,15 @@ function sendPaymentDataToAnet() {
     secureData.authData = authData;
     secureData.cardData = cardData;
 
-	Accept.dispatchData(secureData, responseHandler);
+    Accept.dispatchData(secureData, responseHandler);
 }
 
 document.getElementById('checkout_form_payment').addEventListener("submit", function(e) {
+    var paymentForm = document.getElementById("payment-method-controls")
+    const display = window.getComputedStyle(paymentForm).display;
+
+    if (display === "none") return true;
+
     e.preventDefault();
 
     sendPaymentDataToAnet();

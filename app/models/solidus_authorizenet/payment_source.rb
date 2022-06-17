@@ -30,6 +30,9 @@ module SolidusAuthorizenet
     # by accept.js
     validates(:data_value, presence: true)
     validates(:data_descriptor, presence: true)
+    validates(:last4, presence: true)
+    validates(:expire_month, presence: true)
+    validates(:expire_year, presence: true)
 
     attr_accessor(:address_attributes)
 
@@ -42,5 +45,10 @@ module SolidusAuthorizenet
     def reusable?
       true
     end
+
+    def display_name
+      "Card ending in #{last4} that expires #{expire_month}/#{expire_year}"
+    end
+
   end
 end
