@@ -138,6 +138,8 @@ module SolidusAuthorizenet
 
       if result.is_a?(TrueClass) && result
         ::ActiveMerchant::Billing::Response.new(true, 'Transaction succeeded')
+      elsif result.is_a?(::ActiveMerchant::Billing::Response)
+        result
       elsif result.is_a?(Hash)
         ::ActiveMerchant::Billing::Response.new(true, 'Transaction succeeded', {}, result)
       else
@@ -185,11 +187,11 @@ module SolidusAuthorizenet
       handle_response do
         result = authorize(amount, source, order)
 
-        if result.is_a?(::ActiveMerchant::Billing::Response) && result.success?
-          capture(amount, result.authorization, order).success?
-        else
-          false
+        if result.is_a?(::ActiveMerchant::Billing::Response) && result.success? && capture(amount, result.authorization, order).success?
+          return result
         end
+
+        false
       end
     end
 
@@ -234,7 +236,7 @@ module SolidusAuthorizenet
         request.transactionRequest.profile.customerProfileId = customer[:id]
         request.transactionRequest.profile.paymentProfile = ::AuthorizeNet::API::PaymentProfile.new(customer[:payment_profiles][0][:id])
 
-        request.transactionRequest.refTransId = transaction_id
+        request.transactionRequest.refTransId = transaction_id if transaction_id.present?
         request.transactionRequest.transactionType = ::AuthorizeNet::API::TransactionTypeEnum::RefundTransaction
 
         response = client.create_transaction(request)
