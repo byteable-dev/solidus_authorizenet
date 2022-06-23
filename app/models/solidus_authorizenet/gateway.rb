@@ -154,7 +154,7 @@ module SolidusAuthorizenet
         customer = get_customer(source.customer_id)
         return false if customer.nil?
 
-        log_response(:authorize, customer)
+        log(:authorize, customer)
 
         request = ::AuthorizeNet::API::CreateTransactionRequest.new
 
@@ -223,7 +223,7 @@ module SolidusAuthorizenet
         customer = get_customer(source.customer_id)
         return false if customer.nil?
 
-        log_response(:credit, customer)
+        log(:credit, customer)
 
         request = ::AuthorizeNet::API::CreateTransactionRequest.new
 
@@ -276,6 +276,12 @@ module SolidusAuthorizenet
       error_text = response.messages&.messages&.first&.text
 
       Rails.logger.info "#{method}: #{error_code}: #{error_text}"
+    end
+
+    ##
+    # Just logs data
+    def log(method, data)
+      Rails.logger.info "#{method}: #{data}"
     end
   end
 end
