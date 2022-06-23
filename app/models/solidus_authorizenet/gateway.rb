@@ -154,6 +154,8 @@ module SolidusAuthorizenet
         customer = get_customer(source.customer_id)
         return false if customer.nil?
 
+        log_response(:authorize, customer)
+
         request = ::AuthorizeNet::API::CreateTransactionRequest.new
 
         request.transactionRequest = ::AuthorizeNet::API::TransactionRequestType.new
@@ -220,6 +222,8 @@ module SolidusAuthorizenet
       handle_response do
         customer = get_customer(source.customer_id)
         return false if customer.nil?
+
+        log_response(:credit, customer)
 
         request = ::AuthorizeNet::API::CreateTransactionRequest.new
 
