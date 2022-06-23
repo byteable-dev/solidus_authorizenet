@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    solidus_authorizenet (1.0.4)
+    solidus_authorizenet (1.0.5)
       activemerchant (~> 1.48)
       authorizenet (~> 2.0.1)
       rails (~> 6.1.6)
