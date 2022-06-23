@@ -218,7 +218,7 @@ module SolidusAuthorizenet
     # Credit
     #
     # Issues a credit to customer for amount
-    def credit(amount, source, _, _)
+    def credit(amount, source, transaction_id, _)
       handle_response do
         customer = get_customer(source.customer_id)
         return false if customer.nil?
@@ -234,7 +234,7 @@ module SolidusAuthorizenet
         request.transactionRequest.profile.customerProfileId = customer[:id]
         request.transactionRequest.profile.paymentProfile = ::AuthorizeNet::API::PaymentProfile.new(customer[:payment_profiles][0][:id])
 
-        # request.transactionRequest.refTransId = transaction_id
+        request.transactionRequest.refTransId = transaction_id
         request.transactionRequest.transactionType = ::AuthorizeNet::API::TransactionTypeEnum::RefundTransaction
 
         response = client.create_transaction(request)
