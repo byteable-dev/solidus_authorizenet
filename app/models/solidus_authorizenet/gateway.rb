@@ -41,6 +41,8 @@ module SolidusAuthorizenet
       response = client.get_customer_profile(request)
       success = response.messages.resultCode == ::AuthorizeNet::API::MessageTypeEnum::Ok
 
+      log_response(:get_customer, response)
+
       return nil unless success
 
       payment_profiles = []
@@ -117,6 +119,8 @@ module SolidusAuthorizenet
       error_code = response.messages&.messages&.first&.code
       error_text = response.messages&.messages&.first&.text
 
+      log_response(:create_customer, response)
+
       return error_text.delete('^0-9') if error_code == 'E00039'
 
       raise ::Spree::Core::GatewayError, "#{error_code}: #{error_text}" if error_code.present? && error_code != 'I00001'
@@ -165,6 +169,8 @@ module SolidusAuthorizenet
         response = client.create_transaction(request)
         transaction_id = response.transactionResponse.transId
 
+        log_response(:authorize, response)
+
         { authorization: transaction_id } if transaction_id.present?
       end
     end
@@ -200,6 +206,8 @@ module SolidusAuthorizenet
 
         response = client.create_transaction(request)
 
+        log_response(:capture, response)
+
         response.messages.resultCode == AuthorizeNet::API::MessageTypeEnum::Ok
       end
     end
@@ -227,6 +235,8 @@ module SolidusAuthorizenet
 
         response = client.create_transaction(request)
 
+        log_response(:credit, response)
+
         response.messages.resultCode == AuthorizeNet::API::MessageTypeEnum::Ok
       end
     end
@@ -245,8 +255,23 @@ module SolidusAuthorizenet
 
         response = client.create_transaction(request)
 
+        log_response(:void, response)
+
         response.messages.resultCode == AuthorizeNet::API::MessageTypeEnum::Ok
       end
+    end
+
+    private
+
+    ##
+    # Log Response
+    #
+    # Logs info about a authorize net response
+    def log_response(method, response)
+      error_code = response.messages&.messages&.first&.code
+      error_text = response.messages&.messages&.first&.text
+
+      Rails.logger.info "#{method}: #{error_code}: #{error_text}"
     end
   end
 end
