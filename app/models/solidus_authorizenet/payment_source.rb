@@ -49,7 +49,7 @@ module SolidusAuthorizenet
     # If payment can be credited. Can't credit until at least 2 day is went by.
     # Should mean the payment is settled
     def can_credit?(payment)
-      return false if payment.created_at > 2.day.ago
+      return false if payment.completed? && payment.created_at > 2.day.ago
 
       super
     end
@@ -57,8 +57,8 @@ module SolidusAuthorizenet
     # If payment can be voided. Can't void after 2 days because
     # that should mean the payment must be settled.
     def can_void?(payment)
-      return false if payment.created_at < 2.day.ago
-      
+      return false if payment.completed? && payment.created_at < 2.day.ago
+
       super
     end
 
