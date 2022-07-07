@@ -1,0 +1,19 @@
+<fieldset data-hook="credit_card">
+  <legend align="center">AuthorizeNet</legend>
+    <div class="alpha six columns">
+      <dl>
+        <dt><%= I18n.t("spree.identifier") %>:</dt>
+        <dd><%= payment.number %></dd>
+        <dt><%= I18n.t("spree.response_code") %>:</dt>
+        <dd><%= payment.transaction_id %></dd>
+        <dt>Card Used</dt>
+        <dd><%= payment.source.display_name %></dd>
+        <dt>Authorize Descriptor</dt>
+        <dd><%= payment.source.data_descriptor %></dd>
+        <dt>Authorize Value</dt>
+        <dd><%= payment.source.data_value %></dd>
+        <dt>Authorize Profile Id</dt>
+        <dd><%= payment.source.customer_id %></dd>
+      </dl>
+    </div>
+</fieldset>
