@@ -57,7 +57,7 @@ module SolidusAuthorizenet
     # If payment can be voided. Can't void after 2 days because
     # that should mean the payment must be settled.
     def can_void?(payment)
-      return false if payment.completed? && payment.created_at < 2.day.ago
+      return false if payment.completed? && payment.created_at < 1.day.ago
 
       super
     end
