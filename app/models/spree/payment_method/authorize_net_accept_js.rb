@@ -58,6 +58,8 @@ module Spree
 
         customer_id = gateway.create_customer(payment)
 
+        Rails.logger.info "AuthorizeNetAcceptJs: create_profile: customer_id: #{customer_id}"
+
         payment.source.update(customer_id: customer_id)
       rescue ::Spree::Core::GatewayError => e
         Rails.logger.fatal e

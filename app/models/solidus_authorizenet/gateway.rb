@@ -65,6 +65,7 @@ module SolidusAuthorizenet
     # Creates a customer and a payment profile in authorize.net. Returns
     # customer id.
     def create_customer(payment)
+      log(:create_customer, "Creating customer for #{payment.order.id}")
       order = payment.order
       billing_address = order.bill_address
       shipping_address = order.ship_address
@@ -103,9 +104,9 @@ module SolidusAuthorizenet
         ship_to.lastName = shipping_address.name.split('').last || ship_to.firstName
         ship_to.address = shipping_address.address1
         ship_to.city = shipping_address.city
-        ship_to.state = shipping_address.state.abbr if billing_address.state
+        ship_to.state = shipping_address.state.abbr if shipping_address.state
         ship_to.zip = shipping_address.zipcode
-        ship_to.country = shipping_address.country.iso if billing_address.country
+        ship_to.country = shipping_address.country.iso if shipping_address.country
         ship_to.phoneNumber = shipping_address.phone
 
         request.profile.shipToList = [ship_to]
@@ -277,13 +278,13 @@ module SolidusAuthorizenet
       error_code = response.messages&.messages&.first&.code
       error_text = response.messages&.messages&.first&.text
 
-      Rails.logger.info "#{method}: #{error_code}: #{error_text}"
+      Rails.logger.info "AuthorizeNetGateway: #{method}: #{error_code}: #{error_text}"
     end
 
     ##
     # Just logs data
     def log(method, data)
-      Rails.logger.info "#{method}: #{data}"
+      Rails.logger.info "AuthorizeNetGateway: #{method}: #{data}"
     end
   end
 end
