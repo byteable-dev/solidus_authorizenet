@@ -81,9 +81,9 @@ module SolidusAuthorizenet
       bill_to.lastName = billing_address.name.split('').last || bill_to.firstName
       bill_to.address = billing_address.address1
       bill_to.city = billing_address.city
-      bill_to.state = billing_address.state.abbr
+      bill_to.state = billing_address.state.abbr if billing_address.state
       bill_to.zip = billing_address.zipcode
-      bill_to.country = billing_address.country.iso
+      bill_to.country = billing_address.country.iso if billing_address.country
       bill_to.phoneNumber = billing_address.phone
 
       payment_profile.billTo = bill_to
@@ -103,9 +103,9 @@ module SolidusAuthorizenet
         ship_to.lastName = shipping_address.name.split('').last || ship_to.firstName
         ship_to.address = shipping_address.address1
         ship_to.city = shipping_address.city
-        ship_to.state = shipping_address.state.abbr
+        ship_to.state = shipping_address.state.abbr if billing_address.state
         ship_to.zip = shipping_address.zipcode
-        ship_to.country = shipping_address.country.iso
+        ship_to.country = shipping_address.country.iso if billing_address.country
         ship_to.phoneNumber = shipping_address.phone
 
         request.profile.shipToList = [ship_to]
