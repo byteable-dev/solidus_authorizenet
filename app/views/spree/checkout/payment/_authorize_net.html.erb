@@ -112,8 +112,14 @@ document.getElementById('<%= defined?(form_id) ? form_id : 'checkout_form_paymen
 
     if (display === "none") return true;
     <% end %>
-    e.preventDefault();
+    <% if defined?(admin) %>
+    var form = document.getElementById("<%= defined?(form_id) ? form_id : 'checkout_form_payment' %>");
+    var isNew = form.elements.card.value === "new"
 
+    if (!isNew) return true;
+    <% end %>
+
+    e.preventDefault();
     sendPaymentDataToAnet();
     return false;
 })

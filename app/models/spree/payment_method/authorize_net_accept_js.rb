@@ -65,6 +65,19 @@ module Spree
         Rails.logger.fatal e
         raise e
       end
+
+      ##
+      # Returns all reusable payment sources for the provided
+      # order.
+      def reusable_sources(order)
+        if order.completed?
+          reusable_sources_by_order(order)
+        elsif order.user_id
+          order.user.wallet.wallet_payment_sources.map(&:payment_source).select(&:reusable?)
+        else
+          []
+        end
+      end
     end
   end
 end
