@@ -78,6 +78,19 @@ module Spree
           []
         end
       end
+
+      ##
+      # Finds all reusable payment sources for the provided order.
+      def reusable_sources_by_order(order)
+        source_ids = order.payments.where(payment_method_id: id).pluck(:source_id).uniq
+        payment_source_class.where(id: source_ids).select(&:reusable?)
+      end
+
+      ##
+      # Tries to void a previously authorized payment.
+      def try_void(payment)
+        gateway.void(payment.response_code, nil, nil)
+      end
     end
   end
 end
